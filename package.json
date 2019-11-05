@@ -1,0 +1,18 @@
+{
+  "name": "rest-mongoose-sample",
+  "version": "1.0.0",
+  "description": "MongoDB with Mongoose on Node.js example",
+  "main": "index.js",
+  "engines": {
+    "node": ">=4.1.1",
+    "npm": ">=2.1.x"
+  },
+  "authors": [
+    "zvbox"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "mongoose": "^5.7.5",
+    "restify": "^8.4.0"
+  }
+}
