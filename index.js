@@ -171,7 +171,7 @@ var restify = require('restify')
 
   // Delete patient with the given id
   server.del('/patients/:id', function (req, res, next) {
-    console.log('DEL request: patients/' + req.params.id);
+    console.log('DEL request: patients');
     Patient.remove({ _id: req.params.id }, function (error, result) {
       // If there are any errors, pass them to next in the correct format
       if (error) return next(new errs.InvalidArgumentError(JSON.stringify(error.errors)))
@@ -181,11 +181,29 @@ var restify = require('restify')
     });
   })
 
+  // Get all records from a single patient by their patient id
+  server.get('/patients/:id/records', function (req, res, next) {
+    console.log('GET request: patients/' + req.params.id + '/records');
+
+    // Find a single patient by their id
+    Patient.find({ _id: req.params.id }).exec(function (error, patient) {
+      // If there are any errors, pass them to next in the correct format
+      //if (error) return next(new restify.InvalidArgumentError(JSON.stringify(error.errors)))
+
+      if (patient) {
+        // Send the patient if no issues
+        res.send(patient[0].records)
+      } else {
+        // Send 404 header if the patient doesn't exist
+        res.send(404)
+      }
+    })
+  })
+
   server.post('/patients/:id/records', function (req, res, next) {
-    console.log('POST request: patients/:id/records')
+    console.log('POST request: patients/' + req.params.id + '/records')
 
     Patient.findOneAndUpdate({ _id: req.params.id }).exec(function (error, patient) {
-      console.log(patient);
       if (patient) {
         patient.records.push({
           date: req.body.date,
