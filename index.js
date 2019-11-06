@@ -5,7 +5,9 @@ var SERVER_NAME = 'healthrecords'
 var http = require('http');
 var mongoose = require("mongoose");
 var bcrypt = require('bcrypt');
-var userHandlers = require('userController.js')
+var jwt = require('jsonwebtoken');
+var userHandlers = require('./userController.js');
+var errs = require('restify-errors');
 
 var port = process.env.PORT;
 var ipaddress = process.env.IP; // TODO: figure out which IP to use for the heroku
@@ -50,15 +52,16 @@ var userSchema = new mongoose.Schema({
 });
 
 userSchema.methods.comparePassword = function(password) {
-    return bcrypt.compareSync(password, this.hash_password);
+  console.log("compare password called");
+  console.log(password);
+  console.log(this.hash_password);
+  return bcrypt.compareSync(password, this.hash_password);
 };
 
 // Compiles the schema into a model, opening (or creating, if
 // nonexistent) the 'Patients' collection in the MongoDB database
 var Patient = mongoose.model('Patient', patientSchema);
 var User = mongoose.model('User', userSchema);
-
-var errs = require('restify-errors');
 
 var restify = require('restify')
     // Create the restify server
@@ -98,8 +101,10 @@ server
 
 
 server.use(function(req, res, next) {
+  console.log("auth middleware")
     if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
-        jsonwebtoken.verify(req.headers.authorization.split(' ')[1], 'Puppet', function(err, decode) {
+        jwt.verify(req.headers.authorization.split(' ')[1], 'Puppet', function(err, decode) {
+          console.log("JWT was received")
             if (err) req.user = undefined;
             req.user = decode;
             next();
@@ -112,10 +117,10 @@ server.use(function(req, res, next) {
 
 // Get all patients in the system
 server.get('/patients', function(req, res, next) {
+  console.log('GET request: patients');
     if (req.user) {} else {
-        return res.status(401).json({ message: 'Unauthorized user!' });
+        return next(new errs.UnauthorizedError('Unauthorized user!'))
     }
-    console.log('GET request: patients');
     // Find every entity within the given collection
     Patient.find({}).exec(function(error, result) {
         if (error) return next(new errs.InvalidArgumentError(JSON.stringify(error.errors)))
@@ -276,7 +281,7 @@ server.post('/users', function(req, res, next) {
     // Creating new user.
     var newUser = new User({
         email: req.body.email,
-        hash_password: req.body.password
+        hash_password: bcrypt.hashSync(req.body.password, 10)
     });
 
 
@@ -290,3 +295,21 @@ server.post('/users', function(req, res, next) {
         res.send(201, result)
     })
 })
+
+  server.post('/auth/sign_in', function(req, res, next) {
+    console.log('POST request: auth/sign_in');
+    User.findOne({
+      email: req.body.email
+    }, function(err, user) {
+      if (err) throw err;
+      if (!user) {
+        return next(new errs.UnauthorizedError('Authentication failed. User not found.'))
+      } else if (user) {
+        if (!user.comparePassword(req.body.password)) {
+          return next(new errs.UnauthorizedError('Authentication failed. Wrong password.'))
+        } else {
+          res.send(201, {token: jwt.sign({ email: user.email, _id: user._id}, 'Puppet')});
+        }
+      }
+    });
+  })

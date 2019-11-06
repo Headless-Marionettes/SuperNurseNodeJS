@@ -1,9 +1,9 @@
 var mongoose = require('mongoose'),
     jwt = require('jsonwebtoken'),
-    bcrypt = require('bcrypt'),
-    User = mongoose.model('User');
+    bcrypt = require('bcrypt');
+    //User = mongoose.model('User');
 
-exports.sign_in = function(req, res) {
+exports.sign_in = function(req, res, next) {
     User.findOne({
       email: req.body.email
     }, function(err, user) {
