@@ -4,6 +4,7 @@ var SERVER_NAME = 'healthrecords'
 
 var http = require ('http');
 var mongoose = require ("mongoose");
+var bcrypt = require('bcrypt');
 
 var port = process.env.PORT;
 var ipaddress = process.env.IP; // TODO: figure out which IP to use for the heroku
@@ -24,8 +25,6 @@ mongoose.connect(uristring, function (err, res) {
   }
 });
 
-// This is the schema.  Note the types, validation and trim
-// statements.  They enforce useful constraints on the data.
 var recordSchema = new mongoose.Schema({
   date: String,
   blood_pressure: String,
@@ -45,9 +44,13 @@ var patientSchema = new mongoose.Schema({
 });
 
 var userSchema = new mongoose.Schema({
-  username: String,
-  password: String
+  email: String,
+  hash_password: String
 });
+
+userSchema.methods.comparePassword = function(password) {
+  return bcrypt.compareSync(password, this.hash_password);
+};
 
 // Compiles the schema into a model, opening (or creating, if
 // nonexistent) the 'Patients' collection in the MongoDB database
@@ -227,14 +230,24 @@ var restify = require('restify')
 
   })
 
+  // Get all users in the system
+  server.get('/users', function (req, res, next) {
+    console.log('GET request: users');
+    // Find every entity within the given collection
+    User.find({}).exec(function (error, result) {
+      if (error) return next(new errs.InvalidArgumentError(JSON.stringify(error.errors)))
+      res.send(result);
+    });
+  })
+
   // Create a new patient
   server.post('/users', function (req, res, next) {
     console.log('POST request: user');
 
     // Make sure name is defined
-    if (req.body.username === undefined) {
+    if (req.body.email === undefined) {
       // If there are any errors, pass them to next in the correct format
-      return next(new errs.InvalidArgumentError('username must be supplied'))
+      return next(new errs.InvalidArgumentError('email must be supplied'))
     }
     if (req.body.password === undefined) {
       // If there are any errors, pass them to next in the correct format
@@ -243,8 +256,8 @@ var restify = require('restify')
 
     // Creating new user.
     var newUser = new User({
-      username: req.body.username,
-      password: req.body.password
+      email: req.body.email,
+      hash_password: req.body.password
     });
 
 
