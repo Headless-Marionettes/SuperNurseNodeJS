@@ -186,13 +186,13 @@ var restify = require('restify')
     console.log('GET request: patients/' + req.params.id + '/records');
 
     // Find a single patient by their id
-    Patient.find({ _id: req.params.id }).exec(function (error, patient) {
+    Patient.findOne({ _id: req.params.id }).exec(function (error, patient) {
       // If there are any errors, pass them to next in the correct format
       //if (error) return next(new restify.InvalidArgumentError(JSON.stringify(error.errors)))
 
       if (patient) {
         // Send the patient if no issues
-        res.send(patient[0].records)
+        res.send(patient.records)
       } else {
         // Send 404 header if the patient doesn't exist
         res.send(404)
