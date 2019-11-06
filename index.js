@@ -5,6 +5,7 @@ var SERVER_NAME = 'healthrecords'
 var http = require('http');
 var mongoose = require("mongoose");
 var bcrypt = require('bcrypt');
+var userHandlers = require('userController.js')
 
 var port = process.env.PORT;
 var ipaddress = process.env.IP; // TODO: figure out which IP to use for the heroku
@@ -111,6 +112,9 @@ server.use(function(req, res, next) {
 
 // Get all patients in the system
 server.get('/patients', function(req, res, next) {
+    if (req.user) {} else {
+        return res.status(401).json({ message: 'Unauthorized user!' });
+    }
     console.log('GET request: patients');
     // Find every entity within the given collection
     Patient.find({}).exec(function(error, result) {
