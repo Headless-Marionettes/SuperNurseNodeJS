@@ -309,7 +309,9 @@ server.post('/users', function(req, res, next) {
         if (!user.comparePassword(req.body.password)) {
           return next(new errs.UnauthorizedError('Authentication failed. Wrong password.'))
         } else {
-          res.send(201, {token: jwt.sign({ email: user.email, _id: user._id}, 'Puppet')});
+          res.send(201, {token: jwt.sign({ email: user.email, _id: user._id}, 'Puppet', {
+              expiresIn: '1h'
+          })});
         }
       }
     });
