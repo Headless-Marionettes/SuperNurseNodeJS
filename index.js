@@ -89,6 +89,7 @@ server.listen(port, ipaddress, function() {
     console.log(' /patients/:id/records')
     console.log(' /patients/:id/records/:id')
     console.log(' /users')
+    console.log(' /auth/signin')
 })
 
 
@@ -296,8 +297,8 @@ server.post('/users', function(req, res, next) {
     })
 })
 
-  server.post('/auth/sign_in', function(req, res, next) {
-    console.log('POST request: auth/sign_in');
+  server.post('/auth/signin', function(req, res, next) {
+    console.log('POST request: auth/signin');
     User.findOne({
       email: req.body.email
     }, function(err, user) {
