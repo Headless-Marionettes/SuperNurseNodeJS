@@ -48,13 +48,12 @@ var patientSchema = new mongoose.Schema({
 
 var userSchema = new mongoose.Schema({
     email: String,
+    role: String,
     hash_password: String
 });
 
 userSchema.methods.comparePassword = function(password) {
   console.log("compare password called");
-  console.log(password);
-  console.log(this.hash_password);
   return bcrypt.compareSync(password, this.hash_password);
 };
 
@@ -105,9 +104,14 @@ server.use(function(req, res, next) {
   console.log("auth middleware")
     if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
         jwt.verify(req.headers.authorization.split(' ')[1], 'Puppet', function(err, decode) {
-          console.log("JWT was received")
-            if (err) req.user = undefined;
+            console.log("JWT was received")
+            if (err) {
+                console.log("There was an error in the middleware")
+                req.user = undefined;
+                next();
+            }
             req.user = decode;
+            console.log(`decode is ${decode}`)
             next();
         });
     } else {
@@ -282,6 +286,7 @@ server.post('/users', function(req, res, next) {
     // Creating new user.
     var newUser = new User({
         email: req.body.email,
+        role: req.body.role,
         hash_password: bcrypt.hashSync(req.body.password, 10)
     });
 
@@ -309,9 +314,12 @@ server.post('/users', function(req, res, next) {
         if (!user.comparePassword(req.body.password)) {
           return next(new errs.UnauthorizedError('Authentication failed. Wrong password.'))
         } else {
-          res.send(201, {token: jwt.sign({ email: user.email, _id: user._id}, 'Puppet', {
-              expiresIn: '1h'
-          })});
+            var login = user.email;
+            var role = user.role;
+            var userJwt = jwt.sign({ email: user.email, _id: user._id}, 'Puppet', {
+                expiresIn: '1h'});
+                
+          res.send(201, {token: userJwt});
         }
       }
     });
