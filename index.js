@@ -111,7 +111,6 @@ server.use(function(req, res, next) {
                 next();
             }
             req.user = decode;
-            console.log(`decode is ${decode}`)
             next();
         });
     } else {
@@ -120,14 +119,41 @@ server.use(function(req, res, next) {
     }
 });
 
+
 // Get all patients in the system
 server.get('/patients', function(req, res, next) {
-  console.log('GET request: patients');
-    if (req.user) {} else {
+    console.log('GET request: patients');
+    
+    if (req.user) {
+        var id = req.user._id
+        User.findOne({ _id: id }).exec(function(error, user) {
+            console.log(`email: ${user.email}, role: ${user.role}`)
+            if (error) {
+                console.log("find user error")
+                return next(new errs.UnauthorizedError('Unauthorized user!'))
+            }
+            else if (user) {
+                if(user.role != "Admin") {
+                    console.log("user role not admin")
+                    return next(new errs.UnauthorizedError('Unauthorized user!'))
+                }
+                else
+                {
+                    console.log('before next')
+                    next();
+                }
+            }
+        })
+    } else {
         return next(new errs.UnauthorizedError('Unauthorized user!'))
     }
+}, function (req, res, next) {
+    console.log(` req is ${req}`)
+    console.log(` res is ${res}`)
+
     // Find every entity within the given collection
     Patient.find({}).exec(function(error, result) {
+        console.log("trying to find patients")
         if (error) return next(new errs.InvalidArgumentError(JSON.stringify(error.errors)))
         res.send(result);
     });
