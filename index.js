@@ -135,7 +135,7 @@ server.get('/patients', function(req, res, next) {
             else if (user) {
                 if(user.role != "Admin") {
                     console.log("user role not admin")
-                    return next(new errs.UnauthorizedError('Unauthorized user!'))
+                    return next(new errs.ForbiddenError('Unauthorized user!'))
                 }
                 else
                 {
