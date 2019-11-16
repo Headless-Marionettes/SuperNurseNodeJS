@@ -148,7 +148,7 @@ function CheckUserRole(req, res, next, level) {
                 }
             }
         })
-    } else {
+
         return next(new errs.UnauthorizedError('Unauthorized user!'))
     }
 }
