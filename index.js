@@ -1,16 +1,14 @@
-var DEFAULT_PORT = 5000
-var DEFAULT_HOST = '127.0.0.1'
-var SERVER_NAME = 'healthrecords'
+var port = process.env.PORT;
+var ipaddress = process.env.IP; // TODO: figure out which IP to use for the heroku
 
-var http = require('http');
+var DEFAULT_PORT = port;//5000;
+var DEFAULT_HOST = ipaddress;//'127.0.0.1';
+var SERVER_NAME = 'super-nurse';
+
 var mongoose = require("mongoose");
 var bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
-var userHandlers = require('./userController.js');
 var errs = require('restify-errors');
-
-var port = process.env.PORT;
-var ipaddress = process.env.IP; // TODO: figure out which IP to use for the heroku
 
 // Here we find an appropriate database to connect to, defaulting to
 // localhost if we don't find one.  
