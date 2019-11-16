@@ -4,8 +4,7 @@
     "description": "Node.js app for retirement homes, used for educational purpose only",
     "main": "index.js",
     "scripts": {
-        "start": "node index.js",
-        "web": "node index.js"
+        "start": "node index.js"
     },
     "engines": {
         "node": ">=4.1.1",
