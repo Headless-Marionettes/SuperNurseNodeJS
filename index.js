@@ -14,7 +14,7 @@ var errs = require('restify-errors');
 // localhost if we don't find one.  
 var uristring =
     process.env.MONGODB_URI ||
-    'mongodb://localhost/e-health-db';
+        "mongodb+srv://admin:admin12@cluster0-owpuq.mongodb.net/test?retryWrites=true&w=majority";
 
 // Makes connection asynchronously.  Mongoose will queue up database
 // operations and release them when the connection is complete.
