@@ -157,6 +157,12 @@ server.get('/patients', function(req, res, next) {
     });
 })
 
+// Get a single patient by their patient id
+server.get('/hello', function(req, res, next) {
+    console.log('GET request: hello/');
+
+    res.send("Hello world");
+});
 
 // Get a single patient by their patient id
 server.get('/patients/:id', function(req, res, next) {
