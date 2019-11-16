@@ -78,7 +78,7 @@ if (typeof port === "undefined") {
 };
 
 
-server.listen(port, ipaddress, function() {
+server.listen(process.env.PORT || 5000, function() {
     console.log('Server %s listening at %s', server.name, server.url)
     console.log('Resources:')
     console.log(' /patients')
