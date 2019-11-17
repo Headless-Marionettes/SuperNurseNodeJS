@@ -1,8 +1,8 @@
 var port = process.env.PORT;
 var ipaddress = process.env.IP; // TODO: figure out which IP to use for the heroku
 
-var DEFAULT_PORT = port;//5000;
-var DEFAULT_HOST = ipaddress;//'127.0.0.1';
+var DEFAULT_PORT = port; //5000;
+var DEFAULT_HOST = ipaddress; //'127.0.0.1';
 var SERVER_NAME = 'super-nurse';
 
 var mongoose = require("mongoose");
@@ -14,7 +14,7 @@ var errs = require('restify-errors');
 // localhost if we don't find one.  
 var uristring =
     process.env.MONGODB_URI ||
-        "mongodb+srv://admin:admin12@cluster0-owpuq.mongodb.net/test?retryWrites=true&w=majority";
+    "mongodb+srv://admin:admin12@cluster0-owpuq.mongodb.net/test?retryWrites=true&w=majority";
 
 // Makes connection asynchronously.  Mongoose will queue up database
 // operations and release them when the connection is complete.
@@ -122,6 +122,7 @@ var nurseLevel = "Nurse"
 
 function CheckUserRole(req, res, next, level) {
     if (req.user) {
+        console.log("CheckUserRole in if req.user");
         var id = req.user._id
         User.findOne({ _id: id }).exec(function(error, user) {
             if (error) {
@@ -149,6 +150,7 @@ function CheckUserRole(req, res, next, level) {
             }
         })
 
+        console.log("In CheckRoles before return next(new errs.UnauthorizedError('Unauthorized user!'))");
         return next(new errs.UnauthorizedError('Unauthorized user!'))
     }
 }
