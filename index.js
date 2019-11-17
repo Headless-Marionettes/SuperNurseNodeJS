@@ -132,14 +132,14 @@ function CheckUserRole(req, res, next, level) {
                 if (level === nurseLevel) {
                     if (user.role != "Admin" && user.role != "Nurse") {
                         console.log("User role not nurse or admin")
-                        return next(new errs.UnauthorizedError('Unauthorized user (not Nurse or Admin)!'))
+                        return next(new errs.ForbiddenError('Unauthorized user (not Nurse or Admin)!'))
                     } else {
                         next();
                     }
                 } else if (level === adminLevel) {
                     if (user.role != "Admin") {
                         console.log("User role not admin")
-                        return next(new errs.UnauthorizedError('Unauthorized user (not Admin)!'))
+                        return next(new errs.ForbiddenError('Unauthorized user (not Admin)!'))
                     } else {
                         next();
                     }
