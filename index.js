@@ -122,12 +122,11 @@ var nurseLevel = "Nurse"
 
 function CheckUserRole(req, res, next, level) {
     if (req.user) {
-        console.log("CheckUserRole in if req.user");
         var id = req.user._id
         User.findOne({ _id: id }).exec(function(error, user) {
             if (error) {
-                console.log("find user error")
-                return next(new errs.UnauthorizedError('Unauthorized user!'))
+                console.log("Find user error, error - " + error.message);
+                return next(new errs.UnauthorizedError('Unauthorized user!'));
             } else if (user) {
                 console.log(`email: ${user.email}, role: ${user.role}`);
                 if (level === nurseLevel) {
@@ -135,24 +134,21 @@ function CheckUserRole(req, res, next, level) {
                         console.log("User role not nurse or admin")
                         return next(new errs.UnauthorizedError('Unauthorized user (not Nurse or Admin)!'))
                     } else {
-                        console.log('before next')
                         next();
                     }
                 } else if (level === adminLevel) {
                     if (user.role != "Admin") {
-                        console.log("user role not admin")
+                        console.log("User role not admin")
                         return next(new errs.UnauthorizedError('Unauthorized user (not Admin)!'))
                     } else {
-                        console.log('before next')
                         next();
                     }
                 }
             }
         })
-
-        console.log("In CheckRoles before return next(new errs.UnauthorizedError('Unauthorized user!'))");
-        return next(new errs.UnauthorizedError('Unauthorized user!'))
     }
+
+    return next(new errs.UnauthorizedError('Unauthorized user!'))
 }
 
 // Get all patients in the system
