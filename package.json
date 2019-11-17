@@ -1,20 +1,25 @@
 {
-  "name": "rest-mongoose-sample",
-  "version": "1.0.0",
-  "description": "MongoDB with Mongoose on Node.js example",
-  "main": "index.js",
-  "engines": {
-    "node": ">=4.1.1",
-    "npm": ">=2.1.x"
-  },
-  "authors": [
-    "zvbox"
-  ],
-  "license": "MIT",
-  "dependencies": {
-    "bcrypt": "^3.0.6",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.7.5",
-    "restify": "^8.4.0"
-  }
+    "name": "rest-mongoose-sample",
+    "version": "1.0.0",
+    "description": "Node.js app for retirement homes, used for educational purpose only",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "engines": {
+        "node": ">=4.1.1",
+        "npm": ">=2.1.x"
+    },
+    "authors": [
+        "Ignat",
+        "Blair",
+        "Veronika"
+    ],
+    "license": "MIT",
+    "dependencies": {
+        "bcrypt": "^3.0.6",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^5.7.5",
+        "restify": "^8.4.0"
+    }
 }
