@@ -135,9 +135,7 @@ function CheckUserRole(req, res, next, level) {
                         console.log("User role not nurse or admin")
                         return next(new errs.UnauthorizedError('Unauthorized user (not Nurse or Admin)!'))
                     } else {
-
-                        console.log("before return next()")
-                        return next();
+                        next();
                     }
                 } else if (level === adminLevel) {
                     console.log("admin level")
@@ -145,15 +143,16 @@ function CheckUserRole(req, res, next, level) {
                         console.log("User role not admin")
                         return next(new errs.UnauthorizedError('Unauthorized user (not Admin)!'))
                     } else {
-                        console.log("before return next()")
-                        return next();
+                        next();
                     }
                 }
             }
+
+            return next(new errs.UnauthorizedError('Unauthorized user!'))
         })
+    } else {
+        return next(new errs.UnauthorizedError('Unauthorized user!'))
     }
-    console.log("in checkuserrole before return next(new errs.UnauthorizedError('Unauthorized user!'))")
-    return next(new errs.UnauthorizedError('Unauthorized user!'))
 }
 
 // Get all patients in the system
