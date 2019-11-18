@@ -130,24 +130,29 @@ function CheckUserRole(req, res, next, level) {
             } else if (user) {
                 console.log(`email: ${user.email}, role: ${user.role}`);
                 if (level === nurseLevel) {
+                    console.log("nurse level")
                     if (user.role != "Admin" && user.role != "Nurse") {
                         console.log("User role not nurse or admin")
                         return next(new errs.UnauthorizedError('Unauthorized user (not Nurse or Admin)!'))
                     } else {
+
+                        console.log("before return next()")
                         return next();
                     }
                 } else if (level === adminLevel) {
+                    console.log("admin level")
                     if (user.role != "Admin") {
                         console.log("User role not admin")
                         return next(new errs.UnauthorizedError('Unauthorized user (not Admin)!'))
                     } else {
-                        next();
+                        console.log("before return next()")
+                        return next();
                     }
                 }
             }
         })
     }
-
+    console.log("in checkuserrole before return next(new errs.UnauthorizedError('Unauthorized user!'))")
     return next(new errs.UnauthorizedError('Unauthorized user!'))
 }
 
