@@ -26,6 +26,13 @@ mongoose.connect(uristring, function(err, res) {
     }
 });
 
+var emergencyContactScheme = new mongoose.Schema({
+    name: String,
+    phonenumber: String,
+    email: String,
+    address: String
+})
+
 var recordSchema = new mongoose.Schema({
     date: String,
     blood_pressure: String,
@@ -40,7 +47,10 @@ var patientSchema = new mongoose.Schema({
     height: Number,
     weight: Number,
     date_of_birth: String,
-    floor: String,
+    room: String,
+    alergies: String,
+    blood_type: String,
+    emergency_contact: emergencyContactScheme,
     records: [recordSchema]
 });
 
@@ -58,12 +68,15 @@ userSchema.methods.comparePassword = function(password) {
 // Compiles the schema into a model, opening (or creating, if
 // nonexistent) the 'Patients' collection in the MongoDB database
 var Patient = mongoose.model('Patient', patientSchema);
+var EmergencyContact = mongoose.model('EmergencyContact', emergencyContactScheme);
 var User = mongoose.model('User', userSchema);
 
-var restify = require('restify')
+var restify = require('restify'),
+    swagger = require("swagger-node-restify"),
     // Create the restify server
-    ,
     server = restify.createServer({ name: SERVER_NAME })
+
+swagger.setAppHandler(server);
 
 if (typeof ipaddress === "undefined") {
     //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
@@ -228,7 +241,16 @@ server.post('/patients',
             height: req.body.height,
             weight: req.body.weight,
             date_of_birth: req.body.date_of_birth,
-            floor: req.body.floor
+            room: req.body.room,
+            alergies: req.body.alergies,
+            blood_type: req.body.blood_type,
+
+            emergency_contact: new EmergencyContact({
+                name: req.body.emergency_contact.name,
+                phonenumber: req.body.emergency_contact.phonenumber,
+                email: req.body.emergency_contact.email,
+                address: req.body.emergency_contact.address
+            })
         });
 
 
