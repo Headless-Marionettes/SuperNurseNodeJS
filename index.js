@@ -75,8 +75,6 @@ var restify = require('restify'),
     // Create the restify server
     server = restify.createServer({ name: SERVER_NAME })
 
-swagger.setAppHandler(server);
-
 if (typeof ipaddress === "undefined") {
     //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
     //  allows us to run/test the app locally.
