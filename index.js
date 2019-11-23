@@ -72,7 +72,6 @@ var EmergencyContact = mongoose.model('EmergencyContact', emergencyContactScheme
 var User = mongoose.model('User', userSchema);
 
 var restify = require('restify'),
-    swagger = require("swagger-node-restify"),
     // Create the restify server
     server = restify.createServer({ name: SERVER_NAME })
 
