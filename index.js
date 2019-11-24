@@ -75,13 +75,15 @@ var restify = require('restify'),
     // Create the restify server
     server = restify.createServer({ name: SERVER_NAME })
 
-server.use(
-    function crossOrigin(req,res,next){
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-        return next();
-    }
-);
+const corsMiddleware = require('restify-cors-middleware')
+
+const cors = corsMiddleware({
+    allowHeaders: ['Authorization'],
+    exposeHeaders: ['Access-Control-Allow-Origin', 'Access-Control-Allow-Headers']
+})
+
+server.pre(cors.preflight)
+server.use(cors.actual)
 
 if (typeof ipaddress === "undefined") {
     //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
