@@ -75,6 +75,14 @@ var restify = require('restify'),
     // Create the restify server
     server = restify.createServer({ name: SERVER_NAME })
 
+server.use(
+    function crossOrigin(req,res,next){
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        return next();
+    }
+);
+
 if (typeof ipaddress === "undefined") {
     //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
     //  allows us to run/test the app locally.
@@ -127,8 +135,8 @@ server.use(function(req, res, next) {
     }
 });
 
-var adminLevel = "Admin"
-var nurseLevel = "Nurse"
+var adminLevel = "Admin";
+var nurseLevel = "Nurse";
 
 function CheckUserRole(req, res, next, level) {
     if (req.user) {
@@ -345,10 +353,7 @@ server.post('/patients/:id/records',
                 res.send(404)
             }
         })
-
     });
-
-
 
 // Site admin section
 
