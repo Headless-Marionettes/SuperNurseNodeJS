@@ -334,7 +334,7 @@ server.post('/patients/:id/records',
         CheckUserRole(req, res, next, adminLevel);
     },
     function(req, res, next) {
-        Patient.findOneAndUpdate({ _id: req.params.id }).exec(function(error, patient) {
+        Patient.findOne({ _id: req.params.id }).exec(function(error, patient) {
             if (patient) {
                 patient.records.push({
                     date: req.body.date,
