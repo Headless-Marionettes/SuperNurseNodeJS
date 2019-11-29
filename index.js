@@ -341,7 +341,7 @@ server.post('/patients/:id/records',
                     blood_pressure: req.body.blood_pressure,
                     respiratory_rate: req.body.respiratory_rate,
                     blood_oxygen_level: req.body.blood_oxygen_level,
-                    heart_beat_rate: req.heart_beat_rate
+                    heart_beat_rate: req.body.heart_beat_rate
                 })
                 patient.save(function(err) {
                     if (err) {
