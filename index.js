@@ -423,7 +423,7 @@ server.post('/auth/signin', function(req, res, next) {
                 return next(new errs.UnauthorizedError('Authentication failed. Wrong password.'))
             } else {
                 var userJwt = jwt.sign({ email: user.email, _id: user._id }, 'Puppet', {
-                    expiresIn: '1h'
+                    expiresIn: '4h'
                 });
 
                 res.send(201, { token: userJwt });
