@@ -1,8 +1,8 @@
 var port = process.env.PORT;
 var ipaddress = process.env.IP; // TODO: figure out which IP to use for the heroku
 
-var DEFAULT_PORT = port; //5000;
-var DEFAULT_HOST = ipaddress; //'127.0.0.1';
+var DEFAULT_PORT = 5000;
+var DEFAULT_HOST = '127.0.0.1';
 var SERVER_NAME = 'super-nurse';
 
 var mongoose = require("mongoose");
@@ -50,6 +50,7 @@ var patientSchema = new mongoose.Schema({
     room: String,
     alergies: String,
     blood_type: String,
+    sex: String,
     emergency_contact: emergencyContactScheme,
     records: [recordSchema]
 });
@@ -231,6 +232,7 @@ server.post('/patients',
     },
     function(req, res, next) {
 
+        console.log(req.body);
         // Make sure name is defined
         if (req.body.first_name === undefined) {
             // If there are any errors, pass them to next in the correct format
@@ -251,6 +253,7 @@ server.post('/patients',
             room: req.body.room,
             alergies: req.body.alergies,
             blood_type: req.body.blood_type,
+            sex: req.body.sex,
 
             emergency_contact: new EmergencyContact({
                 name: req.body.emergency_contact.name,
