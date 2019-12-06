@@ -38,7 +38,8 @@ var recordSchema = new mongoose.Schema({
     blood_pressure: String,
     respiratory_rate: String,
     blood_oxygen_level: String,
-    heart_beat_rate: String
+    heart_beat_rate: String,
+    additional_info: String
 });
 
 var patientSchema = new mongoose.Schema({
@@ -344,7 +345,8 @@ server.post('/patients/:id/records',
                     blood_pressure: req.body.blood_pressure,
                     respiratory_rate: req.body.respiratory_rate,
                     blood_oxygen_level: req.body.blood_oxygen_level,
-                    heart_beat_rate: req.body.heart_beat_rate
+                    heart_beat_rate: req.body.heart_beat_rate,
+                    additional_info: req.body.additional_info
                 })
                 patient.save(function(err) {
                     if (err) {
@@ -434,3 +436,35 @@ server.post('/auth/signin', function(req, res, next) {
         }
     });
 });
+
+
+//Update patient by ID
+server.put('/patients/:id',
+    function(req, res, next) {
+        console.log('PUT request: patients/' + req.params.id);
+        CheckUserRole(req, res, next, adminLevel);
+    },
+    function(req, res, next) {
+
+        var tempPatient = {};
+        for(var n in req.body) {
+            tempPatient[n] = req.body[n];
+        }
+        for(var m in req.params) {
+            tempPatient[m] = req.params[m];
+        }
+
+        Patient.findOneAndUpdate({ _id: req.params.id }, tempPatient, {upsert: true}).exec(function(error, patient) {
+            if (error) {
+                res.send(500)
+            } else {
+                patient.save(function(err) {
+                    if (err) {
+                        console.log(err);
+                        return
+                    }
+                });
+                res.send(patient)
+            }
+        })
+    });
